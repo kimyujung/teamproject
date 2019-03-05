@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<body>  
+  <div class = "container">
+    <h2>제목 : {{details.title}}</h2><br>
+    <p>작성 날짜 : {{details.pub_date}}</p>
+    <p>작성자 : {{details.name }}</p>
+    {% if details.image %}
+    <p>첨부 파일 : </p> <img src = "{{details.image.url}}" height = 300 alt = ""><br>
+    {% endif %}
+    <p>자세한 본문 : {{details.body}}</p>
+    <a href="{% url 'edit' details.id %}">수정하기</a>
+    <a href="{% url 'delete' details.id %}">삭제하기</a>
+    <hr>
+
+    <form action="{% url 'comment_create' blog_id=details.id %}" method=POST>
+      {% csrf_token %}
+       내용 : <input type=text name="contents">
+      <input class="btn btn-dark" type="submit" value="입력">
+    </form>
+
+    <div>
+      {% for comment in details.comments.all %}
+        {{ comment.writer}} : {{ comment.contents}} 
+        <a href="{% url 'comment_delete' comment.id %}">삭제</a>
+        <br>
+      {% endfor %}
+    </div>
+
+  </div>
+</body>
+
+{% endblock %}
